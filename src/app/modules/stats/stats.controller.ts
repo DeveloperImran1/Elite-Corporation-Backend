@@ -5,33 +5,19 @@ import { catchAsync } from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
 import { StatsServices } from './stat.service';
 
-const getUserStats = catchAsync(
+const getOrderStats = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await StatsServices.getUserStats();
+    const order = await StatsServices.getOrderStats();
 
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
-      message: 'User stats retrived successfully',
-      data: tour,
-    });
-  },
-);
-
-const getParcelStats = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await StatsServices.getParcelStats();
-
-    sendResponse(res, {
-      success: true,
-      statusCode: httpStatus.OK,
-      message: 'Parcel stats retrived successfully',
-      data: tour,
+      message: 'Order stats retrived successfully',
+      data: order,
     });
   },
 );
 
 export const StatsController = {
-  getUserStats,
-  getParcelStats,
+  getOrderStats,
 };

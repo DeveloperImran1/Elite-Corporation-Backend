@@ -5,8 +5,6 @@ import { StatsController } from './stats.controller';
 
 const router = Router();
 
-router.get('/user', checkAuth(Role.ADMIN), StatsController.getUserStats);
-
-router.get('/parcel', checkAuth(Role.ADMIN), StatsController.getParcelStats);
+router.get('/order', checkAuth(Role.ADMIN), StatsController.getOrderStats);
 
 export const StatsRoutes = router;

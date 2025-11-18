@@ -1,113 +1,56 @@
-import { Parcel } from '../order/order.model';
-import { User } from '../user/user.model';
+import { Order } from '../order/order.model';
 
 const now = new Date();
 const sevenDaysAgo = new Date(now).setDate(now.getDate() - 7); // ajker date theke 7 din ager date ke get korbe.
 const thirtyDaysAgo = new Date(now).setDate(now.getDate() - 30);
 
-const getUserStats = async () => {
-  // ai query gulote await use korini. Karon aisob gulo promise return korabo. And sobar last a await Promise.all([]) er moddhe aksathe promise gulo ke resolve korbo.
-  const totalUsersPromise = User.countDocuments();
+const getOrderStats = async () => {
+  const totalOrderPromise = Order.countDocuments().lean(); // last a .lean() use korle aro better hoi.
 
-  const totalBlockedUsesrPromise = User.countDocuments({
-    isBlocked: true,
-  });
-  const totalDeletedUsesrPromise = User.countDocuments({
-    isDeleted: true,
-  });
-
-  const newUsersInLast7DaysPromise = User.countDocuments({
-    createdAt: { $gte: sevenDaysAgo }, // aikhane createdAt er value jeigulo sevenDaysAgo theke boro, seigulo get korbo. Karon din joto jasse, total milisecond toto besi hosse.
-  });
-
-  const newUsersInLast30DaysPromise = User.countDocuments({
-    createdAt: { $gte: thirtyDaysAgo },
-  });
-
-  const usersByRolePromise = User.aggregate([
-    // Stage 1: grouping by user role and count total users in eacy role
-    {
-      $group: {
-        _id: '$role',
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-
-  const [
-    totalUsers,
-    totalBlockedUsesr,
-    totalDeletedUsesr,
-    newUsersInLast7Days,
-    newUsersInLast30Days,
-    usersByRole,
-  ] = await Promise.all([
-    totalUsersPromise,
-    totalBlockedUsesrPromise,
-    totalDeletedUsesrPromise,
-    newUsersInLast7DaysPromise,
-    newUsersInLast30DaysPromise,
-    usersByRolePromise,
-  ]);
-
-  return {
-    totalUsers,
-    totalBlockedUsesr,
-    totalDeletedUsesr,
-    newUsersInLast7Days,
-    newUsersInLast30Days,
-    usersByRole,
-  };
-};
-
-const getParcelStats = async () => {
-  const totalParcelPromise = Parcel.countDocuments().lean(); // last a .lean() use korle aro better hoi.
-
-  const totalRequestedParcelPromise = Parcel.countDocuments({
+  const totalRequestedOrderPromise = Order.countDocuments({
     status: 'Pending',
   });
 
-  const totalDeliveredParcelPromise = Parcel.countDocuments({
+  const totalDeliveredOrderPromise = Order.countDocuments({
     status: 'Delivered',
   });
-  const totalCancelledParcelPromise = Parcel.countDocuments({
+  const totalCancelledOrderPromise = Order.countDocuments({
     status: 'Cancelled',
   });
 
-  const newParcelInLast7DaysPromise = Parcel.countDocuments({
+  const newOrderInLast7DaysPromise = Order.countDocuments({
     createdAt: { $gte: sevenDaysAgo },
   });
 
-  const newParcelInLast30DaysPromise = User.countDocuments({
+  const newOrderInLast30DaysPromise = Order.countDocuments({
     createdAt: { $gte: thirtyDaysAgo },
   });
 
   const [
-    totalParcel,
-    totalRequestedParcel,
-    totalDeliveredParcel,
-    totalCancelledParcel,
-    newParcelInLast7Days,
-    newParcelInLast30Days,
+    totalOrder,
+    totalRequestedOrder,
+    totalDeliveredOrder,
+    totalCancelledOrder,
+    newOrderInLast7Days,
+    newOrderInLast30Days,
   ] = await Promise.all([
-    totalParcelPromise,
-    totalRequestedParcelPromise,
-    totalDeliveredParcelPromise,
-    totalCancelledParcelPromise,
-    newParcelInLast7DaysPromise,
-    newParcelInLast30DaysPromise,
+    totalOrderPromise,
+    totalRequestedOrderPromise,
+    totalDeliveredOrderPromise,
+    totalCancelledOrderPromise,
+    newOrderInLast7DaysPromise,
+    newOrderInLast30DaysPromise,
   ]);
   return {
-    totalParcel,
-    totalRequestedParcel,
-    totalDeliveredParcel,
-    totalCancelledParcel,
-    newParcelInLast7Days,
-    newParcelInLast30Days,
+    totalOrder,
+    totalRequestedOrder,
+    totalDeliveredOrder,
+    totalCancelledOrder,
+    newOrderInLast7Days,
+    newOrderInLast30Days,
   };
 };
 
 export const StatsServices = {
-  getUserStats,
-  getParcelStats,
+  getOrderStats,
 };
