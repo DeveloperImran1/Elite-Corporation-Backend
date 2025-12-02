@@ -1,10 +1,11 @@
 import { Types } from 'mongoose';
 
-type OrderStatus = 'Pending' | 'Approved' | 'Delivered' | 'Cancelled';
+export type OrderStatus = 'Pending' | 'Approved' | 'Delivered' | 'Cancelled';
 
 export interface IOrder {
   _id?: Types.ObjectId;
   trackingId: string;
+
   // Billing Details
   customerName: string;
   customerAddress: string;
@@ -17,21 +18,20 @@ export interface IOrder {
   // Optional note
   note?: string;
 
-  // Pricing / Order Summary
-  products: {
-    id: string | number;
-    name: string;
-    quantity: number;
-    price: number; // single item price
-    subtotal: number;
-  }[];
+  // Product (Single Product Order)
+  productName: string;
+  singleProductPrice: number;
+  quantity: number;
 
+  // Pricing Summary
   deliveryCharge: number;
-  subtotal: number; // akadhik product er subtotal mila, jeita hoi. Seita main subtotal.
-  totalAmount: number;
+  subtotal: number; // quantity * singleProductPrice
+  totalAmount: number; // subtotal + deliveryCharge
 
-  // Payment Option
+  // Payment
   paymentMethod?: 'cash_on_delivery';
+
+  // Order Lifecycle
   status: OrderStatus;
 
   createdAt?: Date;

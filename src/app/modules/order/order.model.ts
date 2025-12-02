@@ -1,19 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { IOrder } from './order.interface';
 
-// Product Item (Embedded)
-const ProductItemSchema = new Schema(
-  {
-    id: { type: Schema.Types.Mixed, required: true },
-    name: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
-    subtotal: { type: Number, required: true },
-  },
-  { _id: false },
-);
-
-// Order Schema
 const OrderSchema = new Schema<IOrder>(
   {
     trackingId: {
@@ -27,32 +14,61 @@ const OrderSchema = new Schema<IOrder>(
     customerAddress: { type: String, required: true },
     customerPhone: { type: String, required: true },
 
-    // Location
+    // Location (Optional)
     thana: { type: String },
     district: { type: String },
 
-    // Extra notes
+    // Note (Optional)
     note: { type: String },
 
-    // Products List
-    products: {
-      type: [ProductItemSchema],
+    // -------------------------------
+    // Single Product Fields (NEW)
+    // -------------------------------
+    productName: {
+      type: String,
       required: true,
     },
 
-    // Pricing / Calculation
-    deliveryCharge: { type: Number, required: true },
-    subtotal: { type: Number, required: true },
-    totalAmount: { type: Number, required: true },
+    singleProductPrice: {
+      type: Number,
+      required: true,
+    },
 
-    // Payment
+    quantity: {
+      type: Number,
+      required: true,
+    },
+
+    // -------------------------------
+    // Pricing Summary
+    // -------------------------------
+    deliveryCharge: {
+      type: Number,
+      required: true,
+    },
+
+    subtotal: {
+      type: Number,
+      required: true,
+    },
+
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+
+    // -------------------------------
+    // Payment Method
+    // -------------------------------
     paymentMethod: {
       type: String,
       enum: ['cash_on_delivery'],
       default: 'cash_on_delivery',
     },
 
-    // Status
+    // -------------------------------
+    // Order Status
+    // -------------------------------
     status: {
       type: String,
       enum: ['Pending', 'Approved', 'Delivered', 'Cancelled'],
@@ -60,7 +76,7 @@ const OrderSchema = new Schema<IOrder>(
     },
   },
   {
-    timestamps: true, // createdAt, updatedAt auto-add
+    timestamps: true, // createdAt, updatedAt
   },
 );
 
