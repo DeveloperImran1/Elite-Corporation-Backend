@@ -93,6 +93,18 @@ const updateUser = async (
     throw new AppError(httpStatus.BAD_REQUEST, 'User not exist');
   }
 
+  if (
+    isUserExist?.email == 'super-admin@gmail.com' &&
+    (payload?.role == Role.ADMIN ||
+      payload?.role == Role.SENDER ||
+      payload?.role == Role.RECEIVER)
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Super admin role not be changed',
+    );
+  }
+
   // ami admin na hole error diba
   if (verifiedToken.role !== Role.ADMIN) {
     throw new AppError(httpStatus.BAD_REQUEST, 'You are not authorized');
